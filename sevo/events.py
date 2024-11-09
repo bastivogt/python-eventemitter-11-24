@@ -29,7 +29,7 @@ class EventEmitter:
         self._listeners = []
 
     @classmethod
-    def initialize(cls):
+    def initialize(cls) -> "EventEmitter":
         return cls()
 
     def has_listener(self, type: str) -> bool:

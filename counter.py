@@ -22,7 +22,7 @@ class Counter:
     _event_emitter: EventEmitter
 
     def __init__(self, start: int = 0, stop: int = 10, step: int = 1) -> None:
-        self._event_emitter = EventEmitter()
+        self._event_emitter = EventEmitter.initialize()
         self.reset(start, stop, step)
 
     def reset(self, start: int = 0, stop: int = 10, step: int = 1) -> None:
@@ -35,7 +35,7 @@ class Counter:
         self._count = self._start
         # print("START", self._count)
         self._event_emitter.emit(CounterEvent(CounterEvent.COUNTER_STARTED, self, {"count": self._count}))
-        for self._count in range(self._start, self._stop, self._step):
+        for self._count in range(self._start, self._stop + 1, self._step):
             # print("CHANGE", self._count)
             self._event_emitter.emit(CounterEvent(CounterEvent.COUNTER_CHANGED, self, {"count": self._count}))
         #print("FINISH", self._count)
