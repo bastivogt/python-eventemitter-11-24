@@ -1,12 +1,12 @@
 from dataclasses import dataclass
-from typing import Callable
+from typing import Callable, Any
 
 @dataclass
 class Event:
     _type: str
     _sender: object
     _params: dict
-    def __init__(self, type: str, sender: object, params: dict = {}) -> None:
+    def __init__(self, type: str, sender: object, params: dict[str, Any] = {}) -> None:
         self._type = type
         self._sender = sender
         self._params = params
@@ -32,22 +32,22 @@ class EventEmitter:
     def initialize(cls) -> "EventEmitter":
         return cls()
 
-    def has_listener(self, type: str) -> bool:
+    def has_listener(self, type: str, listener: Callable[[Event], None]) -> bool:
         for item in self._listeners:
-            if item["type"] == type:
+            if item["type"] == type and item["listener"] == listener:
                 return True
         return False
     
 
     def on(self, type: str, listener: Callable[[Event], None]) -> bool:
-        if not self.has_listener(type):
+        if not self.has_listener(type, listener):
             self._listeners.append({"type": type, "listener": listener})
             return True
         return False
     
 
     def off(self, type: str, listener: Callable[[Event], None]) -> bool:
-        if self.has_listener(type):
+        if self.has_listener(type, listener):
             # i = 0
             # while(i < len(self._listeners)):
             #     if self._listeners[i]["type"] == type and self._listeners[i]["listener"] == listener:
@@ -62,12 +62,13 @@ class EventEmitter:
     
 
     def emit(self, event: Event) -> bool:
-        if self.has_listener(event.get_type()):
-            for item in self._listeners:
-                if item["type"] == event.get_type():
-                    item["listener"](event)
-                    return True
-        return False
+        ret = False
+        for item in self._listeners:
+            if item["type"] == event.get_type():
+                item["listener"](event)
+                ret = True
+        return ret
+
     
 
     def get_listeners(self) -> list:
