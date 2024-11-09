@@ -3,6 +3,9 @@ from counter import Counter, CounterEvent
 
 c = Counter()
 
+#c.get_event_emitter().set_lazy_check(True)
+
+
 def c_counter_started(e: CounterEvent) -> None:
     print(e.get_type(), e.get_sender().get_count())
 
